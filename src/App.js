@@ -11,6 +11,9 @@ class App {
       const tickets = this.generateLottos(amount);
       // 2-2. 로또 번호 출력하기
       this.printLottos(tickets);
+
+      // 3. 당첨 번호 입력받기
+      const winningNumbers = await this.getWinningNumbers();
     } catch (error) {
       MissionUtils.Console.print(error.message);
       throw error;
@@ -57,6 +60,18 @@ class App {
     tickets.forEach((ticket) => {
       MissionUtils.Console.print(`[${ticket.getNumbers().join(", ")}]`);
     });
+  }
+
+  // 3. 당첨 번호 입력받기
+  async getWinningNumbers() {
+    const WINNING_NUMBERS = await MissionUtils.Console.readLineAsync(
+      "\n당첨 번호를 입력해 주세요. (각 번호는 쉼표로 구분하여 주세요.)\n"
+    );
+    const NUMBERS = WINNING_NUMBERS.split(",").map(Number);
+
+    // Lotto 클래스로 검증 및 객체 생성
+    const WINNING_LOTTO = new Lotto(NUMBERS);
+    return WINNING_LOTTO;
   }
 }
 
