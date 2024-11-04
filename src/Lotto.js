@@ -15,9 +15,7 @@ class Lotto {
       (item, index) => numbers.indexOf(item) !== index
     );
     if (duplicates.length > 0) {
-      throw new Error(
-        `[ERROR] 중복된 당첨 번호가 있습니다. : ${duplicates.join(", ")}`
-      );
+      throw new Error("[ERROR] 중복된 당첨 번호가 있습니다.");
     }
 
     if (

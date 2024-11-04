@@ -32,7 +32,7 @@ class App {
       this.printResults(results);
     } catch (error) {
       MissionUtils.Console.print(error.message);
-      throw error;
+      //throw error;
     }
   }
 
@@ -41,18 +41,13 @@ class App {
     const AMOUNT = await MissionUtils.Console.readLineAsync(
       "구입금액을 입력해 주세요.\n"
     );
-    const INT_AMOUNT = parseInt(AMOUNT, 10);
 
-    if (
-      INT_AMOUNT === "" ||
-      isNaN(INT_AMOUNT) ||
-      INT_AMOUNT < 1000 ||
-      INT_AMOUNT % 1000 !== 0
-    ) {
+    // 정규식 검사: 숫자로만 이루어졌는지, 그리고 1000 단위인지 확인
+    if (!/^\d+$/.test(AMOUNT) || parseInt(AMOUNT, 10) % 1000 !== 0) {
       throw new Error("[ERROR] 구입 금액은 1,000원 단위의 숫자여야 합니다.");
     }
 
-    return INT_AMOUNT;
+    return parseInt(AMOUNT, 10);
   }
 
   // 2-1. 로또 번호 발행하기
