@@ -19,6 +19,13 @@ class App {
       const bonusNumber = await this.getBonusNumber(
         winningNumbers.getNumbers()
       );
+
+      // 5. 당첨 내역 계산하기
+      const results = this.calculateResults(
+        tickets,
+        winningNumbers.getNumbers(),
+        bonusNumber
+      );
     } catch (error) {
       MissionUtils.Console.print(error.message);
       throw error;
@@ -101,6 +108,28 @@ class App {
       throw new Error("[ERROR] 보너스 번호는 당첨 번호와 중복될 수 없습니다.");
     }
     return BONUS_NUMBER;
+  }
+
+  // 5. 당첨 내역 계산하기
+  calculateResults(tickets, winningNumbers, bonusNumber) {
+    const RESULTS = { 3: 0, 4: 0, 5: 0, 5.5: 0, 6: 0 };
+    tickets.forEach((ticket) => {
+      const MATCH_NUMBERS = this.getMatchNumbers(
+        ticket.getNumbers(),
+        winningNumbers
+      );
+
+      if (MATCH_NUMBERS === 5 && ticket.getNumbers().includes(bonusNumber)) {
+        RESULTS["5.5"]++;
+      } else if (MATCH_NUMBERS >= 3) {
+        RESULTS[MATCH_NUMBERS]++;
+      }
+    });
+    return RESULTS;
+  }
+
+  getMatchNumbers(numbers, winningNumbers) {
+    return numbers.filter((num) => winningNumbers.includes(num)).length;
   }
 }
 
