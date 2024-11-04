@@ -14,6 +14,11 @@ class App {
 
       // 3. 당첨 번호 입력받기
       const winningNumbers = await this.getWinningNumbers();
+
+      // 4. 보너스 번호 입력받기
+      const bonusNumber = await this.getBonusNumber(
+        winningNumbers.getNumbers()
+      );
     } catch (error) {
       MissionUtils.Console.print(error.message);
       throw error;
@@ -72,6 +77,30 @@ class App {
     // Lotto 클래스로 검증 및 객체 생성
     const WINNING_LOTTO = new Lotto(NUMBERS);
     return WINNING_LOTTO;
+  }
+
+  // 4. 보너스 번호 입력받기
+  async getBonusNumber(winningNumbers) {
+    const INPUT = await MissionUtils.Console.readLineAsync(
+      "\n보너스 번호를 입력해 주세요. (한 개만 입력해주세요.)\n"
+    );
+    const BONUS_NUMBER = parseInt(INPUT, 10);
+
+    if (
+      BONUS_NUMBER === "" ||
+      isNaN(BONUS_NUMBER) ||
+      BONUS_NUMBER < 1 ||
+      BONUS_NUMBER > 45
+    ) {
+      throw new Error(
+        "[ERROR] 보너스 번호는 1에서 45 사이의 정수만 가능합니다."
+      );
+    }
+
+    if (winningNumbers.includes(BONUS_NUMBER)) {
+      throw new Error("[ERROR] 보너스 번호는 당첨 번호와 중복될 수 없습니다.");
+    }
+    return BONUS_NUMBER;
   }
 }
 
