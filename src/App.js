@@ -6,6 +6,7 @@ class App {
     try {
       // 1. 로또 구입 금액 입력받기
       const amount = await this.getLottoBuyAmount();
+      this.amount = amount;
 
       // 2-1. 로또 번호 발행하기
       const tickets = this.generateLottos(amount);
@@ -26,6 +27,9 @@ class App {
         winningNumbers.getNumbers(),
         bonusNumber
       );
+
+      // 6. 당첨 내역 출력하기
+      this.printResults(results);
     } catch (error) {
       MissionUtils.Console.print(error.message);
       throw error;
@@ -130,6 +134,42 @@ class App {
 
   getMatchNumbers(numbers, winningNumbers) {
     return numbers.filter((num) => winningNumbers.includes(num)).length;
+  }
+
+  // 6-1. 당첨 내역 출력하기
+  printResults(results) {
+    MissionUtils.Console.print("당첨 통계\n---");
+    MissionUtils.Console.print(`3개 일치 (5,000원) - ${results[3]}개`);
+    MissionUtils.Console.print(`4개 일치 (50,000원) - ${results[4]}개`);
+    MissionUtils.Console.print(`5개 일치 (1,500,000원) - ${results[5]}개`);
+    MissionUtils.Console.print(
+      `5개 일치, 보너스 볼 일치 (30,000,000원) - ${results[5.5]}개`
+    );
+    MissionUtils.Console.print(`6개 일치 (2,000,000,000원) - ${results[6]}개`);
+
+    const PROFIT_RATE = this.calculateProfitRate(results);
+    MissionUtils.Console.print(`총 수익률은 ${PROFIT_RATE}%입니다.`);
+  }
+
+  // 6-2. 수익률 계산하기
+  calculateProfitRate(results) {
+    const REWARDS = {
+      3: 5000,
+      4: 50000,
+      5: 1500000,
+      5.5: 30000000,
+      6: 2000000000,
+    };
+    const TOTAL_REWARDS = Object.entries(results).reduce(
+      (sum, [rank, count]) => {
+        return sum + count * REWARDS[rank];
+      },
+      0
+    );
+
+    const TOTAL_SPENT = this.amount;
+
+    return ((TOTAL_REWARDS / TOTAL_SPENT) * 100).toFixed(1);
   }
 }
 
